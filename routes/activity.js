@@ -5,6 +5,8 @@ var nodeExcel = require('excel-export');
 var Activity = require('../models/Activity');
 var Users = require('../models/Users');
 var time = require('../public/javascripts/kylin');
+var ccap = require('ccap')();//Instantiated ccap class
+
 /* GET users listing. */
 router.get('/', function (req, res, next) {
     res.render('activity_index', {});
@@ -43,6 +45,7 @@ router.post('/edit', function (req, res, next) {
     })
 });
 router.post('/add', function (req, res, next) {
+
     var model = new Activity({
         name: req.body.name,
         startDate: req.body.startDate,
@@ -60,8 +63,9 @@ router.post('/add', function (req, res, next) {
     model.save(function (errMsg) {
         if (errMsg)
             res.json({msg: '添加失败', success: false});
-        else
+        else{
             res.json({msg: '添加成功', success: true});
+        }
     });
 });
 router.post('/del', function (req, res, next) {
@@ -94,6 +98,17 @@ router.get('/data', function (req, res, next) {
         res.json({total: total, rows: docs});
     })
 });
+
+//图片验证码 ---测试
+router.get('/code', function (req, res, next) {
+    var ary = ccap.get();
+    var txt = ary[0];
+    var buf = ary[1];
+    res.end(buf);
+    console.log(txt);
+});
+
+
 
 router.get('/excel', function (req, res, next) {
     var conf ={};

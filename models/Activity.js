@@ -82,7 +82,7 @@ Activity.findPagination = function (obj, callback) {
 };
 Activity.findById = function (_id, callback) {
     // doc 是单个文档
-    entity.findById(_id, function (err, doc) {
+    return entity.findById(_id, function (err, doc) {
         if (err) {
             callback(err);
         }

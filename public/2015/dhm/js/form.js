@@ -5,7 +5,7 @@ $(function () {
     $("#form1").submit(function () {
         // 表单验证
         if (!$("#form1")[0].checkValidity()) {
-            return;
+               return;
         }
         $.ajax({
             url: '/users/add',

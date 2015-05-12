@@ -3,6 +3,7 @@ var router = express.Router();
 var users = require('../models/Users');
 /* GET users listing. */
 router.post('/add', function (req, res, next) {
+
     req.body.ip = req._remoteAddress;//存放ip
     users.statics.save(req.body, function (err, doc) {
         if (err) {

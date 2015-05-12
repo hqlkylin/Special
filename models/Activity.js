@@ -3,6 +3,7 @@
  */
 var mongoose = require("./db");
 var Schema = mongoose.Schema;
+var users=require("./Users");
 var activitySchema = new Schema({
     name: String,
     startDate: Date,
@@ -74,7 +75,6 @@ Activity.findPagination = function (obj, callback) {
                     callback(error, null, null);
                 } else {
                     callback(null, count, results);
-
                 }
             });
         }
@@ -100,8 +100,20 @@ Activity.update = function (model, callback) {
     })
 };
 Activity.remove = function (_id, callback) {
-    entity.remove({_id: _id}, function (err) {
-        callback(err);
-    })
+
+            //entity.remove({_id: _id}, function (err) {
+            //    callback(err);
+            //})
+    users.statics.count({activity:_id},function(err,count){
+        if(count<=0){
+            entity.remove({_id: _id}, function (err) {
+                callback(err);
+            })
+        }else{
+            callback(new Error("请先删除活动下的报名信息。"));
+        }
+    });
+
+
 };
 module.exports = Activity;

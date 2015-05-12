@@ -65,9 +65,10 @@ router.post('/add', function (req, res, next) {
     });
 });
 router.post('/del', function (req, res, next) {
+
     Activity.remove(req.body._id, function (err) {
         if (err)
-            res.json({msg: '删除失败', success: false});
+            res.json({msg: '删除失败'+err.message, success: false});
         else {
             res.json({msg: "删除成功！", success: true})
         }

@@ -34,6 +34,9 @@ usersSchema.statics = {
     },
     findAll: function (obj,callback) {
         return entity.find({activity:obj.activity},obj.columns,callback);
+    },
+    count: function (obj,callback) {
+        return entity.count(obj,callback);
     }
 
 }

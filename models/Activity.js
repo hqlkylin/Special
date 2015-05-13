@@ -28,9 +28,7 @@ function Activity(entity) {
     this.state = entity.state;
     this.addTime = entity.addTime;
     this.market = entity.market;
-    this.keywords = entity.keywords;
-    this.description = entity.description;
-    this.script = entity.script;
+
     this.messageTemplate = entity.messageTemplate;
     this.clickCount = entity.clickCount;
     this.limitForm = entity.limitForm;
@@ -43,9 +41,7 @@ Activity.prototype.save = function (callback) {
         state: this.state,
         addTime: this.addTime,
         market: this.market,
-        keywords: this.keywords,
-        description: this.description,
-        script: this.script,
+
         messageTemplate: this.messageTemplate,
         clickCount: this.clickCount,
         limitForm: this.limitForm
@@ -82,7 +78,7 @@ Activity.findPagination = function (obj, callback) {
 };
 Activity.findById = function (_id, callback) {
     // doc 是单个文档
-    return entity.findById(_id, function (err, doc) {
+     entity.findById(_id, function (err, doc) {
         if (err) {
             callback(err);
         }
@@ -95,15 +91,13 @@ Activity.findById = function (_id, callback) {
 Activity.update = function (model, callback) {
     //var _id = model._id; //需要取出主键_id
     //delete model._id;    //再将其删除
+
     entity.update({_id: model._id}, model, function (err, numberAffected) {
         callback(err, numberAffected);
     })
 };
 Activity.remove = function (_id, callback) {
 
-            //entity.remove({_id: _id}, function (err) {
-            //    callback(err);
-            //})
     users.statics.count({activity:_id},function(err,count){
         if(count<=0){
             entity.remove({_id: _id}, function (err) {

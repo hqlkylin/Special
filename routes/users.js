@@ -2,12 +2,23 @@ var express = require('express');
 var router = express.Router();
 var users = require('../models/Users');
 var Activity = require('../models/Activity');
+var request = require('request');//http 请求
+
 /* GET users listing. */
 router.post('/add', function (req, res, next) {
 
+    if (!req.session.codetel) {
+        res.json({msg: '获取数据失败请从新获取验证码！', success: false});
+        return;
+    }
+    var codetel = JSON.parse(req.session.codetel);
     /*验证码*/
-    if(req.session.code!=req.body.code){
+    if (codetel.code != req.body.code) {
         res.json({msg: '验证码错误', success: false});
+        return;
+    }
+    if (codetel.tel != req.body.tel) {
+        res.json({msg: '接收验证码短信电话与报名电话不符。', success: false});
         return;
     }
     /*手机号验证*/
@@ -16,16 +27,74 @@ router.post('/add', function (req, res, next) {
         res.json({msg: "手机号码不正确！", success: false});
         return;
     }
-
     req.body.ip = req._remoteAddress;//存放ip
-    users.statics.save(req.body, function (err, doc) {
+
+    Activity.findById(req.body.activity, function (err, doc) {
         if (err) {
-            res.json({msg: '添加失败'})
+            res.json({msg: "对不起，您提交的参数错误。", success: false})
+            return;
         } else {
-            delete req.session.code;
-            res.json({msg: '添加成功'});
+            console.log(doc)
+            if (!doc) {
+                // 未查询到活动
+                res.json({msg: "对不起，未查询到活动。", success: false})
+                return;
+            } else {
+                // 活动已关闭
+                if (!doc.state) {
+                    res.json({msg: "对不起，活动已关闭。", success: false});
+                    return;
+                }
+                // 活动还未开始
+                if (doc.startDate > new Date()) {
+                    res.json({msg: "对不起，活动还未开始。", success: false});
+                    return;
+                }
+                // 活动已经结束
+                if (doc.endDate < new Date()) {
+                    res.json({msg: "对不起，活动已经结束。", success: false});
+                    return;
+                }
+                /*活动报名人数已满*/
+                users.statics.count({activity: req.body.activity}, function (err, count) {
+                    if (count >= doc.limitForm) {
+                        res.json({msg: "对不起，活动报名人数已满。", success: false});
+                        return;
+                    } else {
+                        /*手机号码重复*/
+                        users.statics.count({activity: req.body.activity, tel: req.body.tel}, function (err, count) {
+                            if (count > 0) {
+                                res.json({msg: "对不起，手机号码已报名！", success: false});
+                                return;
+                            } else {
+
+                                users.statics.save(req.body, function (err, doc) {
+                                    if (err) {
+                                        res.json({msg: '添加失败'})
+                                    } else {
+                                        delete req.session.codetel;
+                                        var yzm = (new Date().getTime() + "").slice(-6);
+                                        var msg = doc.activity.messageTemplate.replace("$yzm", yzm).replace("$money", doc.money).replace("$market", doc.activity.market)
+                                        request('http://msg.jimei.com.cn/sendMessageAll.html?username=jimeijiaju&password=JmjjQaz246&mobile=' + req.body.tel + '&content=' + msg,
+                                            function (error, response, body) {
+                                                if (!error && response.statusCode == 200) {
+                                                    console.log(body) // Show the HTML for the Google homepage.
+                                                    /*暂时什么都没有做*/
+                                                }
+                                            }
+                                        );
+                                        res.json({msg: '添加成功'});
+                                    }
+                                });
+                            }
+                        });
+                    }
+                });
+            }
         }
     });
+
+
 });
 router.get('/', function (req, res, next) {
     res.render('users_index', {});
@@ -75,8 +144,8 @@ router.post('/edit', function (req, res, next) {
     })
 });
 router.post('/del', function (req, res, next) {
-    var arr=[];
-    typeof(req.body["_id[]"])=='string'?arr.push(req.body["_id[]"]):arr=req.body["_id[]"];
+    var arr = [];
+    typeof(req.body["_id[]"]) == 'string' ? arr.push(req.body["_id[]"]) : arr = req.body["_id[]"];
     console.log(arr)
     users.statics.remove(arr, function (err) {
         if (err)
@@ -93,47 +162,55 @@ router.post('/getCode', function (req, res, next) {
         res.json({msg: "手机号码不正确！", success: false});
         return;
     }
-    Activity.findById(req.body._id,function(err,doc){
-        if(err){
-            res.json({msg:"对不起，您提交的参数错误。",success:false})
+    Activity.findById(req.body.activity, function (err, doc) {
+        if (err) {
+            res.json({msg: "对不起，您提交的参数错误。", success: false})
             return;
-        }else{
-            if(!doc){
+        } else {
+            if (!doc) {
                 // 未查询到活动
-                res.json({msg:"对不起，未查询到活动。",success:false})
+                res.json({msg: "对不起，未查询到活动。", success: false})
                 return;
-            }else{
+            } else {
                 // 活动已关闭
-                if(!doc.state) {
+                if (!doc.state) {
                     res.json({msg: "对不起，活动已关闭。", success: false});
                     return;
                 }
                 // 活动还未开始
-                if(doc.startDate>new Date()) {
+                if (doc.startDate > new Date()) {
                     res.json({msg: "对不起，活动还未开始。", success: false});
                     return;
                 }
                 // 活动已经结束
-                if(doc.endDate<new Date()) {
+                if (doc.endDate < new Date()) {
                     res.json({msg: "对不起，活动已经结束。", success: false});
                     return;
                 }
                 /*活动报名人数已满*/
-                users.statics.count({activity:req.body._id},function(err,count){
-                    if(count>=doc.limitForm){
-                        res.json({msg:"对不起，活动报名人数已满。",success:false});
+                users.statics.count({activity: req.body.activity}, function (err, count) {
+                    if (count >= doc.limitForm) {
+                        res.json({msg: "对不起，活动报名人数已满。", success: false});
                         return;
-                    }else{
+                    } else {
                         /*手机号码重复*/
-                        users.statics.count({activity:req.body._id,tel:req.body.tel},function(err,count){
-                            if(count>0){
-                                res.json({msg:"对不起，手机号码已报名！",success:false});
+                        users.statics.count({activity: req.body.activity, tel: req.body.tel}, function (err, count) {
+                            if (count > 0) {
+                                res.json({msg: "对不起，手机号码已报名！", success: false});
                                 return;
-                            }else{
-                                var code=(new Date().getTime()+"").slice(-4);
-                                req.session.code=code;
+                            } else {
+                                var code = (new Date().getTime() + "").slice(-6);
+                                req.session.codetel = JSON.stringify({code: code, tel: req.body.tel});
+                                request('http://msg.jimei.com.cn/sendMessageAll.html?username=jimeijiaju&password=JmjjQaz246&mobile=' + req.body.tel + '&content=您的验证码是' + code,
+                                    function (error, response, body) {
+                                        if (!error && response.statusCode == 200) {
+                                            console.log(body) // Show the HTML for the Google homepage.
+                                            /*暂时什么都没有做*/
+                                        }
+                                    }
+                                );
                                 //成功
-                                res.json({msg:code,success:true});
+                                res.json({msg: code, success: true});
                             }
                         });
                     }
@@ -143,9 +220,76 @@ router.post('/getCode', function (req, res, next) {
     });
 
 });
-router.get("/list",function(req,res,next){
-    users.statics.findAll(req.query,function(err,docs){
+router.get("/list", function (req, res, next) {
+    users.statics.findAll(req.query, function (err, docs) {
+        for(var i in docs){
+            var tel=docs[i].tel.toString();
+            docs[i].tel=tel.replace(tel.substring(3,8),"****");
+        }
         res.json(docs);
     });
+});
+router.get('/click', function (req, res, next) {
+
+    Activity.findById(req.query.activity, function (err, doc) {
+        if (err || !doc) {
+            res.json({msg: "对不起，您提交的参数错误。", success: false})
+            return;
+        } else {
+
+            Activity.update({clickCount: doc.clickCount + 1, _id: doc._id}, function (err, doc) {
+                if (err) {
+                    res.json({msg: "失败：" + err.message, success: false});
+                } else {
+                    res.json({msg: "添加点击率成功", success: true});
+                }
+            })
+
+        }
+    });
+
+});
+
+
+router.post('/check', function (req, res, next) {
+
+    Activity.findById(req.body.activity, function (err, doc) {
+        if (err) {
+            res.json({msg: "对不起，您提交的参数错误。", success: false})
+            return;
+        } else {
+            if (!doc) {
+                // 未查询到活动
+                res.json({msg: "对不起，未查询到活动。", success: false})
+                return;
+            } else {
+                // 活动已关闭
+                if (!doc.state) {
+                    res.json({msg: "对不起，活动已关闭。", success: false});
+                    return;
+                }
+                // 活动还未开始
+                if (doc.startDate > new Date()) {
+                    res.json({msg: "对不起，活动还未开始。", success: false});
+                    return;
+                }
+                // 活动已经结束
+                if (doc.endDate < new Date()) {
+                    res.json({msg: "对不起，活动已经结束。", success: false});
+                    return;
+                }
+                /*活动报名人数已满*/
+                users.statics.count({activity: req.body.activity}, function (err, count) {
+                    if (count >= doc.limitForm) {
+                        res.json({msg: "对不起，活动报名人数已满。", success: false});
+                        return;
+                    } else {
+                        res.json({msg: "活动运行中……", success: true});
+                    }
+                });
+            }
+        }
+    });
+
 });
 module.exports = router;

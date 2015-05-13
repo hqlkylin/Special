@@ -22,7 +22,14 @@ usersSchema.statics = {
             .exec(callback)
     },
     save: function (model, callback) {
-        return entity.create(model, callback);
+        return entity.create(model, function(err,doc){
+                if(err){
+                    callback(err);
+                }else{
+                    return entity .findOne({_id: doc._id}).populate('activity').exec(callback);
+                }
+        });
+
     },
     update: function (model, callback) {
         entity.update({_id: model._id}, model, function (err, numberAffected) {

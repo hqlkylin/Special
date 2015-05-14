@@ -131,7 +131,7 @@ $(function () {
             success: function (data) {
                 /*data:{msg:"信息",success:"true"}*/
                 if (data.success) {
-                    $.messager.popup(data.msg);
+                    //$.messager.popup(data.msg);
                 } else {
                     $.messager.popup(data.msg);
                 }

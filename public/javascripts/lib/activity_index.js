@@ -34,12 +34,9 @@ $(function () {
                     $("input[name='startDate']", $("#form1")).val(new Date(data.startDate).format("yyyy-MM-dd hh:mm:ss"));
                     $("input[name='endDate']", $("#form1")).val(new Date(data.endDate).format("yyyy-MM-dd hh:mm:ss"));
                     $("select[name='market']", $("#form1")).val(data.market);
-                    $("input[name='keywords']", $("#form1")).val(data.keywords);
-                    $("textarea[name='description']", $("#form1")).val(data.description);
                     $("textarea[name='messageTemplate']", $("#form1")).val(data.messageTemplate);
                     $("input[name='clickCount']", $("#form1")).val(data.clickCount);
                     $("input[name='limitForm']", $("#form1")).val(data.limitForm);
-                    $("input[name='script']", $("#form1")).val(data.script);
                     $("input[name='_id']", $("#form1")).val(data._id);
                     $("input[name='state']", $("#form1")).each(function(index,item){
                         $(item).val()==data.state?$(item).attr("checked","true"):$(item).removeAttr("checked");
@@ -168,12 +165,12 @@ $(function () {
         singleSelect: true,
         columns: [
             {},
-         /*   {
+            {
                 field: '_id',
                 title: '系统编号',
                 align: 'right',
                 valign: 'bottom'
-            },*/
+            },
             {
                 field: 'name',
                 title: '活动名称',

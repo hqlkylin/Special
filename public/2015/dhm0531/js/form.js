@@ -36,6 +36,7 @@ $(function () {
                 success: function (data) {
                     /*data:{msg:"信息",success:"true"}*/
                     $.messager.popup(data.msg);
+                    $("#form1").validate().resetForm();
                 }
             });
         }

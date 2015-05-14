@@ -37,6 +37,7 @@ $(function () {
                     /*data:{msg:"信息",success:"true"}*/
                     $.messager.popup(data.msg);
                     $("#form1").validate().resetForm();
+                    $("#form1")[0].reset();
                 }
             });
         }

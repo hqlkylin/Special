@@ -34,7 +34,7 @@ router.post('/add', function (req, res, next) {
             res.json({msg: "对不起，您提交的参数错误。", success: false})
             return;
         } else {
-            console.log(doc)
+
             if (!doc) {
                 // 未查询到活动
                 res.json({msg: "对不起，未查询到活动。", success: false})
@@ -74,8 +74,12 @@ router.post('/add', function (req, res, next) {
                                     } else {
                                         delete req.session.codetel;
                                         var yzm = (new Date().getTime() + "").slice(-6);
-                                        var msg = doc.activity.messageTemplate.replace("$yzm", yzm).replace("$money", doc.money).replace("$market", doc.activity.market)
-                                        request('http://msg.jimei.com.cn/sendMessageAll.html?username=jimeijiaju&password=JmjjQaz246&mobile=' + req.body.tel + '&content=' + msg,
+                                        var msg = doc.activity.messageTemplate.replace("$yzm", yzm).replace("$money", doc.money).replace("$market", doc.activity.market);
+
+                                        var url = "http://msg.jimei.com.cn/sendMessageAll.html?username=jimeijiaju&password=JmjjQaz246&mobile=" + req.body.tel + "&content=" + encodeURI(msg);
+
+                                        //  request('http://msg.jimei.com.cn/sendMessageAll.html?username=jimeijiaju&password=JmjjQaz246&mobile=' + req.body.tel + '&content=' + msg,
+                                        request(url,
                                             function (error, response, body) {
                                                 if (!error && response.statusCode == 200) {
                                                     console.log(body) // Show the HTML for the Google homepage.
@@ -201,7 +205,22 @@ router.post('/getCode', function (req, res, next) {
                             } else {
                                 var code = (new Date().getTime() + "").slice(-6);
                                 req.session.codetel = JSON.stringify({code: code, tel: req.body.tel});
-                                request('http://msg.jimei.com.cn/sendMessageAll.html?username=jimeijiaju&password=JmjjQaz246&mobile=' + req.body.tel + '&content=您的验证码是' + code,
+
+                                /*   request('http://msg.jimei.com.cn/sendMessageAll.html?username=jimeijiaju&password=JmjjQaz246&mobile=' + req.body.tel + '&content=您的验证码是' + code,
+                                 function (error, response, body) {
+                                 if (!error && response.statusCode == 200) {
+                                 console.log(body) // Show the HTML for the Google homepage.
+                                 /!*暂时什么都没有做*!/
+                                 }
+                                 }
+                                 );*/
+
+                                //console.log('http://fast-msg.com/api/send?username=jimeiyanzhengma&password=d2r084k&mobile=' + req.body.tel + '&content=您的验证码是' + code+'[集美家居]')
+                                //request('http://fast-msg.com/api/send?username=jimeiyanzhengma&password=d2r084k&mobile=' + req.body.tel + '&content=您的验证码是' + code+'[集美家居]',
+                                //request('http://fast-msg.com/api/send?username=jimeiyanzhengma&password=d2r084k&mobile=18040477715&content=%E6%82%A8%E7%9A%84%E9%AA%8C%E8%AF%81%E7%A0%81%E6%98%AF23068[%E9%9B%86%E7%BE%8E%E5%AE%B6%E5%B1%85]',
+                                var url = "http://msg.jimei.com.cn/sendMessageAll.html?username=jimeijiaju&password=JmjjQaz246&mobile=" + req.body.tel + "&content=" + encodeURI("您的验证码是" + code);
+
+                                request(url,
                                     function (error, response, body) {
                                         if (!error && response.statusCode == 200) {
                                             console.log(body) // Show the HTML for the Google homepage.
@@ -222,9 +241,9 @@ router.post('/getCode', function (req, res, next) {
 });
 router.get("/list", function (req, res, next) {
     users.statics.findAll(req.query, function (err, docs) {
-        for(var i in docs){
-            var tel=docs[i].tel.toString();
-            docs[i].tel=tel.replace(tel.substring(3,8),"****");
+        for (var i in docs) {
+            var tel = docs[i].tel.toString();
+            docs[i].tel = tel.replace(tel.substring(3, 8), "****");
         }
         res.json(docs);
     });

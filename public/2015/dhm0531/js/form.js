@@ -3,7 +3,7 @@
  */
 $(function () {
     //init 活动
-    var activity = '5548976d1e6aab9453f4cd1a';
+    var activity = '5554113f4fbb3b0411bd3c11';
     $("input[name='activity']").val(activity);
 
     /*form submit*/

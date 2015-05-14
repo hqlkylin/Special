@@ -5,7 +5,7 @@ var nodeExcel = require('excel-export');
 var Activity = require('../models/Activity');
 var Users = require('../models/Users');
 var time = require('../public/javascripts/kylin');
-var ccap = require('ccap')();//Instantiated ccap class
+//var ccap = require('ccap')();//Instantiated ccap class
 
 /* GET users listing. */
 router.get('/', function (req, res, next) {
@@ -100,13 +100,13 @@ router.get('/data', function (req, res, next) {
 });
 
 //图片验证码 ---测试
-router.get('/code', function (req, res, next) {
+/*router.get('/code', function (req, res, next) {
     var ary = ccap.get();
     var txt = ary[0];
     var buf = ary[1];
     res.end(buf);
     console.log(txt);
-});
+});*/
 
 
 

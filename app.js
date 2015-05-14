@@ -1,4 +1,4 @@
-var express = require('express');
+﻿var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
@@ -63,5 +63,5 @@ app.use(function(err, req, res, next) {
 });
 
 app.listen(3000);
-console.log("项目启动成功：http://localhost:3000");
+console.log("项目启动成功：http://localhost:80");
 module.exports = app;

@@ -134,6 +134,11 @@
                                     <button type="button" id="editBtn" class="btn btn-default">修改</button>
                                     <button type="button" id="delBtn" class="btn btn-default">删除</button>
                                     <button type="button" id="excelBtn" class="btn btn-default">导出Excel</button>
+                                    <button type="button" id="batceBtn" class="btn btn-default">批量导入</button>
+
+                                    <a href="template/1.xlsx" class="btn btn-primary" role="button">
+                                        <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span> 下载模板
+                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -227,19 +232,22 @@
 
                     <div class="form-group">
                         <label class="col-sm-2 control-label">短信模板</label>
+
                         <div class="col-sm-10">
-                            <textarea class="form-control" rows="4" name="messageTemplate" >您已成功预约【8折储值卡】，验证码[$yzm]请勿泄露。请凭此短信于5.1~5.3日营业期间到$market办理8折储值卡，预约金额$money元，储值卡有效期至2015年12月31日。</textarea>
+                            <textarea class="form-control" rows="4" name="messageTemplate">您已成功预约【8折储值卡】，验证码[$yzm]请勿泄露。请凭此短信于5.1~5.3日营业期间到$market办理8折储值卡，预约金额$money元，储值卡有效期至2015年12月31日。</textarea>
                             <span id="helpBlock" class="help-block">验证码=$yzm，金额=$money，市场=$market</span>
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="col-sm-2 control-label">点击 率</label>
+
                         <div class="col-sm-10">
                             <input type="number" class="form-control" name="clickCount" placeholder="">
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="col-sm-2 control-label">报名人数限制</label>
+
                         <div class="col-sm-10">
                             <input type="number" class="form-control" name="limitForm" placeholder="">
                         </div>
@@ -270,6 +278,30 @@
 </div>
 <!-- /.modal -->
 <!--提示框-->
-<!--<div class="alert alert-success alert-msg" role="alert">添加成功</div>-->
+<div class="modal fade" id="batceModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">批量上传</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="exampleInputFile">模板文件</label>
+                    <input id='file' type="file">
+                    <p class="help-block">请选择后缀是xlsx的Excel文件.</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="file_upload">Save changes</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
 </body>
 </html>

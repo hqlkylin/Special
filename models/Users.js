@@ -69,4 +69,8 @@ usersSchema.findPagination = function (obj, callback) {
     })
 };
 
+usersSchema.create=function(arr,callback){
+    return entity.create(arr, callback);
+}
+
 module.exports = usersSchema;

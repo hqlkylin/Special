@@ -214,4 +214,41 @@ $(function () {
         });
     });
 
+    /*批量导入*/
+    $("#batceBtn").on("click", function () {
+        var row = $table.bootstrapTable('getSelections');
+        if (row == false) {
+            $.messager.popup("请选择一行");
+            return;
+        }
+        $('#batceModal').modal('show');
+    });
+
+    $('#file_upload').click(function () {
+        var data = new FormData();
+        var files = $('#file')[0].files;
+        if (files) {
+            data.append('excel', files[0]);
+            data.append("_id",$table.bootstrapTable('getSelections')[0]._id);
+        }
+        $.ajax({
+            cache: false,
+            type: 'post',
+            dataType: 'json',
+            url: 'activity/upload',
+            data: data,
+            contentType: false,
+            processData: false,
+            success: function (data) {
+                if (data.success) {
+                    //隐藏模态框
+                    $('#batceModal').modal("hide");
+                    $.messager.popup(data.msg);
+                }else{
+                    $.messager.popup(data.msg);
+                }
+            }
+        });
+    });
+
 })

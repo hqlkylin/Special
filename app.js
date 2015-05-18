@@ -22,6 +22,19 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(session({ secret: 'kylin' /*加密*/}));
 
+//文件上传
+var multer  = require('multer');
+var time = require('./public/javascripts/kylin');
+
+app.use(multer({
+  dest: './uploads/',
+  rename: function (fieldname, filename) {
+    /*return filename.replace(/\W+/g, '-').toLowerCase() + Date.now()*/
+    return  new Date().format("yyyyMMddhhmmss");
+  }
+}))
+
+
 var routes = require('./routes/index');
 var activity = require('./routes/activity');
 var users = require('./routes/users');

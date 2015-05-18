@@ -17,6 +17,8 @@
     "excel-export":"~0.4.1",
     "express-session":"~1.11.2",
     "mongoose":"~4.0.2",
-    "request":"~2.55.0"
+    "request":"~2.55.0",
+    "multer":"~0.1.8",
+    "xlsx":"~0.8.0"
   }
 }

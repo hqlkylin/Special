@@ -261,4 +261,8 @@ router.get('/excel', function (req, res, next) {
     })
 
 });
+
+router.get('/api', function (req, res, next) {
+    res.render('api', {});
+});
 module.exports = router;

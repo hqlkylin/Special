@@ -70,7 +70,7 @@ router.post('/add', function (req, res, next) {
 
                                 users.statics.save(req.body, function (err, doc) {
                                     if (err) {
-                                        res.json({msg: '添加失败'})
+                                        res.json({msg: '添加失败', success: false})
                                     } else {
                                         delete req.session.codetel;
                                         var yzm = (new Date().getTime() + "").slice(-6);
@@ -87,7 +87,7 @@ router.post('/add', function (req, res, next) {
                                                 }
                                             }
                                         );
-                                        res.json({msg: '添加成功'});
+                                        res.json({msg: '添加成功', success: true});
                                     }
                                 });
                             }
@@ -229,7 +229,7 @@ router.post('/getCode', function (req, res, next) {
                                     }
                                 );
                                 //成功
-                                res.json({msg: code, success: true});
+                                res.json({msg: "验证码获取成功", success: true});
                             }
                         });
                     }
@@ -240,6 +240,7 @@ router.post('/getCode', function (req, res, next) {
 
 });
 router.get("/list", function (req, res, next) {
+    req.query.columns='name addTime tel address';
     users.statics.findAll(req.query, function (err, docs) {
         for (var i in docs) {
             var tel = docs[i].tel.toString();

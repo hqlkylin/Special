@@ -51,7 +51,7 @@ $(function () {
             data: {activity: activity},
             success: function (data) {
                 $.each(data, function (index, item) {
-                    var newline = $(".list li:first").clone();
+                    var newline = $("<li><span></span><span></span><span>无</span><span>无</span></li>");
                     newline.find("span").eq(0).html(item.name);
                     newline.find("span").eq(1).html(item.tel);
                     newline.find("span").eq(2).html(item.address);
@@ -81,7 +81,7 @@ $(function () {
     };
 
     //get code
-    $("#getCode").click(function () {
+    $("#getCode").click(function (e) {
 
         $.ajax({
             url: '/users/getCode',
@@ -92,6 +92,7 @@ $(function () {
                 $.messager.popup(data.msg);
             }
         });
+        return false;
     })
 
 

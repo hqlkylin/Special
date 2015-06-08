@@ -17,7 +17,7 @@
 
 .top{ height: 712px; background: url(../images/top.jpg) no-repeat center top; }
 .img-01{ margin: 0 auto; width: 899px; height: 319px; position:relative;}
-.img-01 .mx{ top:-120px; right: 100px; position: absolute;}
+.img-01 .mx{ top:-120px; right: -120px; position: absolute;}
 .img{ margin-top: 20px;}
 
 

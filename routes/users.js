@@ -74,19 +74,19 @@ router.post('/add', function (req, res, next) {
                                     } else {
                                         delete req.session.codetel;
                                         var yzm = (new Date().getTime() + "").slice(-6);
-                                        var msg = doc.activity.messageTemplate.replace("$yzm", yzm).replace("$money", doc.money).replace("$market", doc.activity.market);
+                                        var msg = doc.activity.messageTemplate.replace("$yzm", yzm).replace("$money", doc.money).replace(/\$market/g, doc.activity.market);
 
                                         var url = "http://msg.jimei.com.cn/sendMessageAll.html?username=jimeijiaju&password=JmjjQaz246&mobile=" + req.body.tel + "&content=" + encodeURI(msg);
 
                                         //  request('http://msg.jimei.com.cn/sendMessageAll.html?username=jimeijiaju&password=JmjjQaz246&mobile=' + req.body.tel + '&content=' + msg,
-                                      /*  request(url,
+                                          request(url,
                                             function (error, response, body) {
                                                 if (!error && response.statusCode == 200) {
                                                     console.log(body) // Show the HTML for the Google homepage.
-                                                    /!*暂时什么都没有做*!/
+                                                    /*暂时什么都没有做*/
                                                 }
                                             }
-                                        );*/
+                                        );
                                         res.json({msg: '添加成功', success: true});
                                     }
                                 });
@@ -220,14 +220,14 @@ router.post('/getCode', function (req, res, next) {
                                 //request('http://fast-msg.com/api/send?username=jimeiyanzhengma&password=d2r084k&mobile=18040477715&content=%E6%82%A8%E7%9A%84%E9%AA%8C%E8%AF%81%E7%A0%81%E6%98%AF23068[%E9%9B%86%E7%BE%8E%E5%AE%B6%E5%B1%85]',
                                 var url = "http://msg.jimei.com.cn/sendMessageAll.html?username=jimeijiaju&password=JmjjQaz246&mobile=" + req.body.tel + "&content=" + encodeURI("您的验证码是" + code);
 
-                              /*  request(url,
+                                request(url,
                                     function (error, response, body) {
                                         if (!error && response.statusCode == 200) {
                                             console.log(body) // Show the HTML for the Google homepage.
-                                            /!*暂时什么都没有做*!/
+                                            /*暂时什么都没有做*/
                                         }
                                     }
-                                );*/
+                                );
                                 //成功
                                 res.json({msg: "验证码获取成功:"+code, success: true});
                             }

@@ -269,8 +269,6 @@ router.get('/click', function (req, res, next) {
     });
 
 });
-
-
 router.post('/check', function (req, res, next) {
 
     Activity.findById(req.body.activity, function (err, doc) {

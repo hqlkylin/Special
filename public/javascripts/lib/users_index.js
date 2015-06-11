@@ -11,7 +11,7 @@ $(function () {
 
     /*修改*/
     $("#editBtn").on("click", function () {
-        $("#form1").attr("action", "/users/edit")
+        $("#form1").attr("action", "/users/edit");
         var row = $table.bootstrapTable('getSelections');
         if (row.length != 1) {
             $.messager.popup("请选择一行");
